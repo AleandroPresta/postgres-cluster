@@ -6,20 +6,37 @@ RUN apk add --no-cache \
  postgresql \
  postgresql-contrib
 
-RUN mkdir -p /usr/local/pgsql/data
+# Env Variables
+ENV POSTGRES_PORT=${POSTGRES_PORT}
+ENV POSTGRES_USER=${POSTGRES_USER}
+ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
+# Create dir for pgsql
+RUN mkdir -p /usr/local/pgsql/data
 RUN chown postgres:postgres /usr/local/pgsql/data
 
-COPY start.sh /start.sh
+RUN mkdir -p /run/postgresql
+RUN chown postgres:postgres /run/postgresql
 
-RUN chown postgres:postgres /start.sh
+# Custom scripts
+RUN mkdir -p /scripts
+
+# Copy the script that starts the Postgres Server
+COPY start.sh /scripts/start.sh
+RUN chown postgres:postgres /scripts/start.sh
+RUN chmod +x /scripts/start.sh
+
+# Copy the script that initializes DB and Table
+COPY init.sql /scripts/init.sql
+RUN chown postgres:postgres /scripts/init.sql
+RUN chmod +x /scripts/init.sql
 
 USER postgres
 
+# Initialize the database
 RUN initdb -D /usr/local/pgsql/data
 
-RUN chmod +x /start.sh
+# Expose the port
+EXPOSE ${POSTGRES_PORT}
 
-EXPOSE 5432
-
-CMD ["./start.sh"]
+CMD ["./scripts/start.sh"]
