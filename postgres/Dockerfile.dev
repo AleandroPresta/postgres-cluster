@@ -3,16 +3,23 @@ FROM alpine:3.18
 RUN apk update
 RUN apk add --no-cache \
  bash \
- postgresql
+ postgresql \
+ postgresql-contrib
 
 RUN mkdir -p /usr/local/pgsql/data
 
 RUN chown postgres:postgres /usr/local/pgsql/data
 
+COPY start.sh /start.sh
+
+RUN chown postgres:postgres /start.sh
+
 USER postgres
 
 RUN initdb -D /usr/local/pgsql/data
 
-RUN pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/data/logfile start
+RUN chmod +x /start.sh
 
-CMD ["tail", "-f", "/dev/null"]
+EXPOSE 5432
+
+CMD ["./start.sh"]

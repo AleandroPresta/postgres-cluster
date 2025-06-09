@@ -4,3 +4,5 @@ services:
         build:
             context: ./postgres
             dockerfile: Dockerfile.dev
+        ports:
+            - 5432:5432
