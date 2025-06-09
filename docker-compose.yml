@@ -1,3 +1,6 @@
 services:
     postgres:
         container_name: postgres
+        build:
+            context: ./postgres
+            dockerfile: Dockerfile.dev

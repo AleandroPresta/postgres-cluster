@@ -1,1 +1,18 @@
 FROM alpine:3.18
+
+RUN apk update
+RUN apk add --no-cache \
+ bash \
+ postgresql
+
+RUN mkdir -p /usr/local/pgsql/data
+
+RUN chown postgres:postgres /usr/local/pgsql/data
+
+USER postgres
+
+RUN initdb -D /usr/local/pgsql/data
+
+RUN pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/data/logfile start
+
+CMD ["tail", "-f", "/dev/null"]
