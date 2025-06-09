@@ -6,11 +6,6 @@ RUN apk add --no-cache \
  postgresql \
  postgresql-contrib
 
-# Env Variables
-ENV POSTGRES_PORT=${POSTGRES_PORT}
-ENV POSTGRES_USER=${POSTGRES_USER}
-ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-
 # Create dir for pgsql
 RUN mkdir -p /usr/local/pgsql/data
 RUN chown postgres:postgres /usr/local/pgsql/data
